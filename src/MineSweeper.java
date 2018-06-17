@@ -21,45 +21,45 @@ class GameResultDialog extends JDialog {
 }
 
 class MineSweeperGame extends JPanel {
-    public int size_x;
-    public int size_y;
-    public int field_width;
-    public int field_height;
-    public int cell_half_radius;
-    public int cell_half_height;
-    JDialog success_dialog;
-    JDialog fail_dialog;
+    public int sizeX;
+    public int sizeY;
+    public int fieldWidth;
+    public int fieldHeight;
+    public int cellHalfRadius;
+    public int cellHalfHeight;
+    JDialog successDialog;
+    JDialog failDialog;
     public Cell cells [][];
-    public MineSweeperGame (int _size_x, int _size_y,
-                            int cell_radius_pixels, int border_pixels,
-                            JDialog _success_dialog, JDialog _fail_dialog) {
-        size_x = _size_x;
-        size_y = _size_y;
-        success_dialog = _success_dialog;
-        fail_dialog = _fail_dialog;
-        cell_half_radius = cell_radius_pixels / 2;
-        cell_half_height = (int)(cell_half_radius * Math.sqrt (3.0));
-        field_width = 2*border_pixels + size_x * 3 * cell_half_radius + cell_half_radius + 10;
-        field_height = 2*border_pixels + cell_half_height * (1 + 2 * size_y) + 30;
-        cells = new Cell [size_x] [size_y];
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
-                int center_x = border_pixels + 2 * cell_half_radius + 3 * x * cell_half_radius;
-                int center_y = border_pixels + cell_half_height + 2 * cell_half_height * y;
+    public MineSweeperGame (int size_x, int size_y,
+                            int cellRadiusPixels, int borderPixels,
+                            JDialog success_dialog, JDialog fail_dialog) {
+        sizeX = size_x;
+        sizeY = size_y;
+        successDialog = success_dialog;
+        failDialog = fail_dialog;
+        cellHalfRadius = cellRadiusPixels / 2;
+        cellHalfHeight = (int)(cellHalfRadius * Math.sqrt (3.0));
+        fieldWidth = 2 * borderPixels + sizeX * 3 * cellHalfRadius + cellHalfRadius + 10;
+        fieldHeight = 2 * borderPixels + cellHalfHeight * (1 + 2 * sizeY) + 30;
+        cells = new Cell [sizeX] [sizeY];
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                int center_x = borderPixels + 2 * cellHalfRadius + 3 * x * cellHalfRadius;
+                int center_y = borderPixels + cellHalfHeight + 2 * cellHalfHeight * y;
                 if (x % 2 == 1)
-                    center_y += cell_half_height;
-                cells [x] [y] = new Cell (x, y, center_x, center_y, cell_half_radius, cell_half_height);
+                    center_y += cellHalfHeight;
+                cells [x] [y] = new Cell (x, y, center_x, center_y, cellHalfRadius, cellHalfHeight);
             }
         }
 
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent ev) {
-                int mouse_x = ev.getX ();
-                int mouse_y = ev.getY ();
+                int mouseX = ev.getX ();
+                int mouseY = ev.getY ();
                 Cell c = null;
-                for (int x = 0; x < size_x; x++) {
-                    for (int y = 0; y < size_y; y++) {
-                        if (cells [x] [y].containsPoint (mouse_x, mouse_y)) {
+                for (int x = 0; x < sizeX; x++) {
+                    for (int y = 0; y < sizeY; y++) {
+                        if (cells [x] [y].containsPoint (mouseX, mouseY)) {
                             c = cells [x] [y];
                         }
                     }
@@ -74,16 +74,16 @@ class MineSweeperGame extends JPanel {
         });
     }
     public int getFieldWidth () {
-        return field_width;
+        return fieldWidth;
     }
     public int getFieldHeight () {
-        return field_height;
+        return fieldHeight;
     }
 
     public void clear () {
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
-                cells [x] [y].has_mine = false;
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells [x] [y].hasMine = false;
                 cells [x] [y].neighbours = 0;
                 cells [x] [y].opened = false;
                 cells [x] [y].flagged = false;
@@ -92,12 +92,12 @@ class MineSweeperGame extends JPanel {
     }
 
     public void placeMine (int x, int y) {
-        cells [x] [y].has_mine = true;
+        cells [x] [y].hasMine = true;
     }
 
     public void fillWithMines (double probability) {
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
                 if (Math.random () < probability)
                     placeMine (x, y);
             }
@@ -105,39 +105,38 @@ class MineSweeperGame extends JPanel {
     }
 
     public void calculateNeighboursCount () {
-
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
                 int n = 0;
                 if (x != 0) {
-                    if (cells [x-1] [y].has_mine)
+                    if (cells [x-1] [y].hasMine)
                         n++;
                 }
-                if (x != size_x - 1) {
-                    if (cells [x+1] [y].has_mine)
+                if (x != sizeX - 1) {
+                    if (cells [x+1] [y].hasMine)
                         n++;
                 }
                 if (y != 0) {
-                    if (cells [x] [y-1].has_mine)
+                    if (cells [x] [y-1].hasMine)
                         n++;
                     if (x % 2 == 0) {
                         if (x != 0)
-                            if (cells [x-1] [y-1].has_mine)
+                            if (cells [x-1] [y-1].hasMine)
                                 n++;
-                        if (x != size_x - 1)
-                            if (cells [x+1] [y-1].has_mine)
+                        if (x != sizeX - 1)
+                            if (cells [x+1] [y-1].hasMine)
                                 n++;
                     }
                 }
-                if (y != size_y - 1) {
-                    if (cells [x] [y+1].has_mine)
+                if (y != sizeY - 1) {
+                    if (cells [x] [y+1].hasMine)
                         n++;
                     if (x % 2 == 1) {
                         if (x != 0)
-                            if (cells [x-1] [y+1].has_mine)
+                            if (cells [x-1] [y+1].hasMine)
                                 n++;
-                        if (x != size_x - 1)
-                            if (cells [x+1] [y+1].has_mine)
+                        if (x != sizeX - 1)
+                            if (cells [x+1] [y+1].hasMine)
                                 n++;
                     }
                 }
@@ -148,18 +147,18 @@ class MineSweeperGame extends JPanel {
     public void leftClick (Cell c) {
         c.opened = true;
         repaint ();
-        if (c.has_mine) {
-            fail_dialog.setVisible (true);
+        if (c.hasMine) {
+            failDialog.setVisible (true);
         }
         boolean all_opened = true;
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
                 if (cells [x][y].opened == false)
                     all_opened = false;
             }
         }
         if (all_opened) {
-            success_dialog.setVisible (true);
+            successDialog.setVisible (true);
         }
     }
 
@@ -167,27 +166,26 @@ class MineSweeperGame extends JPanel {
         c.flagged = true;
         c.opened = true;
         repaint ();
-        if (c.has_mine == false) {
-            fail_dialog.setVisible (true);
+        if (c.hasMine == false) {
+            failDialog.setVisible (true);
         }
         boolean all_opened = true;
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
                 if (cells [x][y].opened == false)
                     all_opened = false;
             }
         }
         if (all_opened) {
-            success_dialog.setVisible (true);
+            successDialog.setVisible (true);
         }
     }
 
     public void paint(Graphics g) {
-
         Font font = new Font ("SansSerif", Font.PLAIN, 48);
         g.setFont (font);
-        for (int x = 0; x < size_x; x++) {
-            for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
                 cells [x] [y].paint (g);
             }
         }
@@ -197,13 +195,13 @@ class Cell {
     public Cell (int _x, int _y, int _center_x, int _center_y, int _half_radius, int _half_height) {
         x = _x;
         y = _y;
-        center_x = _center_x;
-        center_y = _center_y;
-        half_radius = _half_radius;
-        half_height = _half_height;
+        centerX = _center_x;
+        centerY = _center_y;
+        halfRadius = _half_radius;
+        halfHeight = _half_height;
         opened = false;
         flagged = false;
-        has_mine = false;
+        hasMine = false;
         neighbours = 0;
         border = new Polygon ();
         border.addPoint (_center_x - 2*_half_radius, _center_y);
@@ -222,14 +220,14 @@ class Cell {
         g.drawPolygon (border);
         ch [0] = '?';
         if (opened) {
-            if (has_mine)
+            if (hasMine)
                 ch [0] = '*';
             else
                 ch [0] = (char)('0' + neighbours);
         }
         if (flagged)
             ch [0] = 'F';
-        g.drawChars (ch, 0, 1, center_x-12, center_y+18);
+        g.drawChars (ch, 0, 1, centerX -12, centerY +18);
     }
 
     public boolean containsPoint (int x, int y) {
@@ -237,15 +235,15 @@ class Cell {
     }
     protected int x;
     protected int y;
-    protected int center_x;
-    protected int center_y;
-    protected int half_radius;
-    protected int half_height;
+    protected int centerX;
+    protected int centerY;
+    protected int halfRadius;
+    protected int halfHeight;
     protected char ch [];
     protected Polygon border;
     protected boolean opened;
     protected boolean flagged;
-    protected boolean has_mine;
+    protected boolean hasMine;
     protected int neighbours;
 }
 
