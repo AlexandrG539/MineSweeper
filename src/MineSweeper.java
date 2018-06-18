@@ -30,6 +30,7 @@ class MineSweeperGame extends JPanel {
     JDialog successDialog;
     JDialog failDialog;
     public Cell cells [][];
+
     public MineSweeperGame (int size_x, int size_y,
                             int cellRadiusPixels, int borderPixels,
                             JDialog success_dialog, JDialog fail_dialog) {
@@ -44,11 +45,11 @@ class MineSweeperGame extends JPanel {
         cells = new Cell [sizeX] [sizeY];
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                int center_x = borderPixels + 2 * cellHalfRadius + 3 * x * cellHalfRadius;
-                int center_y = borderPixels + cellHalfHeight + 2 * cellHalfHeight * y;
+                int centerX = borderPixels + 2 * cellHalfRadius + 3 * x * cellHalfRadius;
+                int centerY = borderPixels + cellHalfHeight + 2 * cellHalfHeight * y;
                 if (x % 2 == 1)
-                    center_y += cellHalfHeight;
-                cells [x] [y] = new Cell (x, y, center_x, center_y, cellHalfRadius, cellHalfHeight);
+                    centerY += cellHalfHeight;
+                cells [x] [y] = new Cell (x, y, centerX, centerY, cellHalfRadius, cellHalfHeight);
             }
         }
 
@@ -73,12 +74,8 @@ class MineSweeperGame extends JPanel {
             }
         });
     }
-    public int getFieldWidth () {
-        return fieldWidth;
-    }
-    public int getFieldHeight () {
-        return fieldHeight;
-    }
+    public int getFieldWidth () { return fieldWidth; }
+    public int getFieldHeight () { return fieldHeight; }
 
     public void clear () {
         for (int x = 0; x < sizeX; x++) {
@@ -192,41 +189,48 @@ class MineSweeperGame extends JPanel {
     }
 }
 class Cell {
-    public Cell (int _x, int _y, int _center_x, int _center_y, int _half_radius, int _half_height) {
+    public Cell (int _x, int _y, int center_x, int center_y, int half_radius, int half_height) {
         x = _x;
         y = _y;
-        centerX = _center_x;
-        centerY = _center_y;
-        halfRadius = _half_radius;
-        halfHeight = _half_height;
+        centerX = center_x;
+        centerY = center_y;
+        halfRadius = half_radius;
+        halfHeight = half_height;
         opened = false;
         flagged = false;
         hasMine = false;
         neighbours = 0;
         border = new Polygon ();
-        border.addPoint (_center_x - 2*_half_radius, _center_y);
-        border.addPoint (_center_x - _half_radius, _center_y+_half_height);
-        border.addPoint (_center_x + _half_radius, _center_y+_half_height);
-        border.addPoint (_center_x + 2*_half_radius, _center_y);
-        border.addPoint (_center_x + _half_radius, _center_y-_half_height);
-        border.addPoint (_center_x - _half_radius, _center_y-_half_height);
+        border.addPoint (center_x - 2 * half_radius, center_y);
+        border.addPoint (center_x - half_radius, center_y + half_height);
+        border.addPoint (center_x + half_radius, center_y + half_height);
+        border.addPoint (center_x + 2 * half_radius, center_y);
+        border.addPoint (center_x + half_radius, center_y - half_height);
+        border.addPoint (center_x - half_radius, center_y - half_height);
         ch = new char [1];
     }
 
     public void paint (Graphics g) {
-        g.setColor (Color.LIGHT_GRAY);
+        Color backgroundColor = Color.LIGHT_GRAY;
+        ch [0] = '?';
+        if (opened) {
+            if (hasMine) {
+                backgroundColor = Color.RED;
+                ch[0] = '*';
+            }
+            else {
+                ch[0] = (char) ('0' + neighbours);
+                backgroundColor = Color.cyan;
+            }
+        }
+        if (flagged) {
+            ch[0] = 'F';
+            backgroundColor = Color.YELLOW;
+        }
+        g.setColor (backgroundColor);
         g.fillPolygon (border);
         g.setColor (Color.BLACK);
         g.drawPolygon (border);
-        ch [0] = '?';
-        if (opened) {
-            if (hasMine)
-                ch [0] = '*';
-            else
-                ch [0] = (char)('0' + neighbours);
-        }
-        if (flagged)
-            ch [0] = 'F';
         g.drawChars (ch, 0, 1, centerX -12, centerY +18);
     }
 
