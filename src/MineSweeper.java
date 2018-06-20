@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 
+
 class GameResultDialog extends JDialog {
     public GameResultDialog (JFrame owner, String msg) {
         super(owner, "MineSweeper", true);
@@ -30,12 +31,17 @@ class MineSweeperGame extends JPanel {
     JDialog successDialog;
     JDialog failDialog;
     public Cell cells [][];
+    boolean minesPlaced;
+    int numMines;
 
     public MineSweeperGame (int size_x, int size_y,
                             int cellRadiusPixels, int borderPixels,
+                            int num_mines,
                             JDialog success_dialog, JDialog fail_dialog) {
         sizeX = size_x;
         sizeY = size_y;
+        numMines = num_mines;
+        minesPlaced = false;
         successDialog = success_dialog;
         failDialog = fail_dialog;
         cellHalfRadius = cellRadiusPixels / 2;
@@ -78,6 +84,7 @@ class MineSweeperGame extends JPanel {
     public int getFieldHeight () { return fieldHeight; }
 
     public void clear () {
+        minesPlaced = false;
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 cells [x] [y].hasMine = false;
@@ -92,11 +99,15 @@ class MineSweeperGame extends JPanel {
         cells [x] [y].hasMine = true;
     }
 
-    public void fillWithMines (double probability) {
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                if (Math.random () < probability)
-                    placeMine (x, y);
+    public void fillWithMines (int dontplace_x, int dontplace_y) {
+        java.util.Random rnd = new java.util.Random ();
+        int placed = 0;
+        while (placed < numMines) {
+            int x = rnd.nextInt (sizeX);
+            int y = rnd.nextInt (sizeY);
+            if (!(cells [x] [y].hasMine) && (x != dontplace_x) && (y != dontplace_y)) {
+                placeMine (x, y);
+                placed++;
             }
         }
     }
@@ -142,6 +153,13 @@ class MineSweeperGame extends JPanel {
         }
     }
     public void leftClick (Cell c) {
+        if (!minesPlaced) {
+            fillWithMines (c.x, c.y);
+            calculateNeighboursCount ();
+            minesPlaced = true;
+        }
+        if (c.opened)
+            return;
         c.opened = true;
         repaint ();
         if (c.hasMine) {
@@ -160,6 +178,13 @@ class MineSweeperGame extends JPanel {
     }
 
     public void rightClick (Cell c) {
+        if (!minesPlaced) {
+            fillWithMines (c.x, c.y);
+            calculateNeighboursCount ();
+            minesPlaced = true;
+        }
+        if (c.opened)
+            return;
         c.flagged = true;
         c.opened = true;
         repaint ();
@@ -253,16 +278,35 @@ class Cell {
 
 public class MineSweeper {
     public static void main(String[] args) {
+        if (args.length != 3 || Integer.valueOf(args[0]) <= 0 || Integer.valueOf(args[1]) <= 0
+                || Integer.valueOf(args[2]) <= 0) {
+            System.out.println("неверный аргумент");
+            return;
+        }
+        int w = Integer.valueOf(args[0]);
+        if (w > 25) {
+            System.out.println("слишком широкое поле");
+            return;
+        }
+        int h = Integer.valueOf(args[1]);
+        if (h > 11) {
+            System.out.println("Слишком высокое поле");
+            return;
+        }
+        int m = Integer.valueOf(args[2]);
+        if (m >= w * h) {
+            System.out.println("неправильно задано количество мин");
+            return;
+        }
         JFrame frame = new JFrame();
         GameResultDialog fail_dialog =
                 new GameResultDialog (frame, "<html><h1><i>Вы проиграли!!!</h1></html>");
         GameResultDialog success_dialog =
                 new GameResultDialog (frame, "<html><h1><i>Вы выиграли!!!</h1></html>");
-        MineSweeperGame game = new MineSweeperGame (15, 10, 40, 10,
+        MineSweeperGame game = new MineSweeperGame (w, h,  40, 10,
+                m,
                 success_dialog, fail_dialog);
         game.clear ();
-        game.fillWithMines (0.2);
-        game.calculateNeighboursCount ();
         frame.setSize (game.getFieldWidth (), game.getFieldHeight ());
         frame.getContentPane().add(game);
         frame.setLocationRelativeTo(null);
