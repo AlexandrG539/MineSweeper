@@ -15,19 +15,18 @@ class MineSweeperGameTest {
     }
 
     @org.junit.jupiter.api.Test
-    void fillWithMines(int i, int i1) {
+    void fillWithMines() {
         int mines = 0;
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 30,
                 null, null);
-        fillWithMines(0 , 0);
+        gameTest.fillWithMines(0,0);
         for (int x = 0; x < 15; x++) {
             for (int y = 0; y < 10; y++) {
                 if (gameTest.cells[x][y].hasMine)
                     mines++;
             }
         }
-        System.out.println(mines);
-        if (mines != 30)
+        if (mines == 30)
             assertEquals(true, true);
         else assertEquals(true, false);
     }
