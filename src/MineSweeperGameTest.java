@@ -49,9 +49,8 @@ class MineSweeperGameTest {
     void leftClick() {
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 0,
                 null, null);
-        gameTest.calculateNeighboursCount();
-        gameTest.leftClick(gameTest.cells[1][1]);
-        if (gameTest.cells[1][1].opened)
+        gameTest.leftClick(gameTest.cells[0][0]);
+        if (gameTest.cells[0][0].opened)
             assertEquals(true, true);
         else assertEquals(true, false);
     }
