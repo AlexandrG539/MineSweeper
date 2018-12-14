@@ -7,9 +7,9 @@ import java.awt.*;
 
 
 public class MineSweeper {
-    public static void main(String[] args) {
-        if (args.length != 3 || Integer.valueOf(args[0]) <= 0 || Integer.valueOf(args[1]) <= 0
-                || Integer.valueOf(args[2]) <= 0) {
+    public static void main(String[] args) throws InterruptedException {
+        if (args.length != 4 || Integer.valueOf(args[0]) <= 0 || Integer.valueOf(args[1]) <= 0
+                || Integer.valueOf(args[2]) <= 0 || (!args[3].equals("bot") && !args[3].equals("player"))) {
             System.out.println("неверный аргумент");
             return;
         }
@@ -28,20 +28,40 @@ public class MineSweeper {
             System.out.println("неправильно задано количество мин");
             return;
         }
-        JFrame frame = new JFrame();
-        GameResultDialog failDialog =
-                new GameResultDialog (frame, "<html><h1><i>Вы проиграли!!!</h1></html>");
-        GameResultDialog successDialog =
-                new GameResultDialog (frame, "<html><h1><i>Вы выиграли!!!</h1></html>");
-        MineSweeperGame game = new MineSweeperGame (w, h,  40, 10,
-                m,
-                successDialog, failDialog);
-        game.clear ();
-        frame.setSize (game.getFieldWidth (), game.getFieldHeight ());
-        frame.getContentPane().add(game);
-        frame.setLocationRelativeTo(null);
-        frame.setBackground(Color.LIGHT_GRAY);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        if (args[3].equals("player")) {
+            JFrame frame = new JFrame();
+            GameResultDialog failDialog =
+                    new GameResultDialog(frame, "<html><h1><i>Вы проиграли!!!</h1></html>");
+            GameResultDialog successDialog =
+                    new GameResultDialog(frame, "<html><h1><i>Вы выиграли!!!</h1></html>");
+            MineSweeperGame game = new MineSweeperGame(w, h, 40, 10,
+                    m,
+                    successDialog, failDialog);
+            game.clear();
+            frame.setSize(game.getFieldWidth(), game.getFieldHeight());
+            frame.getContentPane().add(game);
+            frame.setLocationRelativeTo(null);
+            frame.setBackground(Color.LIGHT_GRAY);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        }
+        if (args[3].equals("bot")) {
+            JFrame frame = new JFrame();
+            GameResultDialog failDialog =
+                    new GameResultDialog(frame, "<html><h1><i>Вы проиграли!!!</h1></html>");
+            GameResultDialog successDialog =
+                    new GameResultDialog(frame, "<html><h1><i>Вы выиграли!!!</h1></html>");
+            BotPlayer game = new BotPlayer(w, h, 40, 10,
+                    m,
+                    successDialog, failDialog);
+            game.clear();
+            frame.setSize(game.getFieldWidth(), game.getFieldHeight());
+            frame.getContentPane().add(game);
+            frame.setLocationRelativeTo(null);
+            frame.setBackground(Color.LIGHT_GRAY);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+            game.play();
+        }
     }
 }

@@ -10,7 +10,9 @@ class Cell {
         halfHeight = half_height;
         opened = false;
         flagged = false;
+        closed = false;
         hasMine = false;
+        probability = 0.000;
         neighbours = 0;
         border = new Polygon();
         border.addPoint (center_x - 2 * half_radius, center_y);
@@ -61,4 +63,6 @@ class Cell {
     protected boolean flagged;
     protected boolean hasMine;
     protected int neighbours;
+    protected double probability;
+    protected boolean closed;
 }

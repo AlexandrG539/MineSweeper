@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 class MineSweeperGame extends JPanel {
     public int sizeX;
@@ -63,7 +64,9 @@ class MineSweeperGame extends JPanel {
             }
         });
     }
+
     public int getFieldWidth () { return fieldWidth; }
+
     public int getFieldHeight () { return fieldHeight; }
 
     public void clear () {
