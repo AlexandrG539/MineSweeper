@@ -87,114 +87,18 @@ class BotPlayer extends JPanel {
     public void probabilityProblem() throws InterruptedException {
         Set<Cell> p = new HashSet();
         for (Cell cell: noClosedCells) {
-            if (cell.x > 0)
-                if (!cells[cell.x-1][cell.y].opened) {
-                    if (cells[cell.x-1][cell.y].probability == 0.000) {
-                        cells[cell.x-1][cell.y].probability = (double) freeMines(cells[cell.x][cell.y]) /
+            List<Cell> n = getNeighbours(cell.x, cell.y);
+            for (Cell c: n) {
+                if (!c.opened) {
+                    if (c.probability == 0.000) {
+                        c.probability = (double) freeMines(cells[cell.x][cell.y]) /
                                 (double) notOpenedCellsNear(cell.x, cell.y);
-                        p.add(cells[cell.x-1][cell.y]);
-                    }
-                    else {
-                        cells[cell.x-1][cell.y].probability = 1 - (1 - cells[cell.x-1][cell.y].probability) * (1 - ((double) freeMines(cells[cell.x][cell.y]) /
+                        p.add(c);
+                    } else {
+                        c.probability = 1 - (1 - c.probability) * (1 - ((double) freeMines(cells[cell.x][cell.y]) /
                                 (double) notOpenedCellsNear(cell.x, cell.y)));
-                        p.add(cells[cell.x-1][cell.y]);
+                        p.add(c);
                     }
-                }
-            if (cell.x < sizeX - 1)
-                if (!cells[cell.x+1][cell.y].opened) {
-                    if (cells[cell.x+1][cell.y].probability == 0.000) {
-                        cells[cell.x+1][cell.y].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                (double) notOpenedCellsNear(cell.x, cell.y);
-                        p.add(cells[cell.x+1][cell.y]);
-                    }
-                    else {
-                        cells[cell.x+1][cell.y].probability = 1 - (1 - cells[cell.x+1][cell.y].probability) * (1 - ((double) freeMines(cells[cell.x][cell.y]) /
-                                (double) notOpenedCellsNear(cell.x, cell.y)));
-                        p.add(cells[cell.x+1][cell.y]);
-                    }
-                }
-            if (cell.y > 0) {
-                if (!cells[cell.x][cell.y-1].opened) {
-                    if (cells[cell.x][cell.y-1].probability == 0.000) {
-                        cells[cell.x][cell.y-1].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                (double) notOpenedCellsNear(cell.x, cell.y);
-                        p.add(cells[cell.x][cell.y-1]);
-                    }
-                    else {
-                        cells[cell.x][cell.y-1].probability = 1 - (1 - cells[cell.x][cell.y-1].probability) * (1 - (double) freeMines(cells[cell.x][cell.y]) /
-                                (double) notOpenedCellsNear(cell.x, cell.y));
-                        p.add(cells[cell.x][cell.y-1]);
-                    }
-                }
-                if (cell.x % 2 == 0) {
-                    if (cell.x > 0)
-                        if (!cells[cell.x-1][cell.y-1].opened) {
-                            if (cells[cell.x-1][cell.y-1].probability == 0.000) {
-                                cells[cell.x-1][cell.y-1].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y);
-                                p.add(cells[cell.x-1][cell.y-1]);
-                            }
-                            else {
-                                cells[cell.x-1][cell.y-1].probability = 1 - (1 - cells[cell.x-1][cell.y-1].probability) * (1 - (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y));
-                                p.add(cells[cell.x-1][cell.y-1]);
-                            }
-                        }
-                    if (cell.x < sizeX - 1)
-                        if (!cells[cell.x+1][cell.y-1].opened) {
-                            if (cells[cell.x+1][cell.y-1].probability == 0.000) {
-                                cells[cell.x+1][cell.y-1].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y);
-                                p.add(cells[cell.x+1][cell.y-1]);
-                            }
-                            else {
-                                cells[cell.x+1][cell.y-1].probability = 1 - (1 - cells[cell.x+1][cell.y-1].probability) * (1 - (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y));
-                                p.add(cells[cell.x+1][cell.y-1]);
-                            }
-                        }
-                }
-            }
-            if (cell.y < sizeY - 1) {
-                if (!cells[cell.x][cell.y+1].opened) {
-                    if (cells[cell.x][cell.y+1].probability == 0.000) {
-                        cells[cell.x][cell.y+1].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                (double) notOpenedCellsNear(cell.x, cell.y);
-                        p.add(cells[cell.x][cell.y+1]);
-                    }
-                    else {
-                        cells[cell.x][cell.y+1].probability = 1 - (1 - cells[cell.x][cell.y+1].probability) * (1 - (double) freeMines(cells[cell.x][cell.y]) /
-                                (double) notOpenedCellsNear(cell.x, cell.y));
-                        p.add(cells[cell.x][cell.y+1]);
-                    }
-                }
-                if (cell.x % 2 == 1) {
-                    if (cell.x > 0)
-                        if (!cells[cell.x-1][cell.y+1].opened) {
-                            if (cells[cell.x-1][cell.y+1].probability == 0.000) {
-                                cells[cell.x-1][cell.y+1].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y);
-                                p.add(cells[cell.x-1][cell.y+1]);
-                            }
-                            else {
-                                cells[cell.x-1][cell.y+1].probability = 1 - (1 - cells[cell.x-1][cell.y+1].probability) * (1 - (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y));
-                                p.add(cells[cell.x-1][cell.y+1]);
-                            }
-                        }
-                    if (cell.x < sizeX - 1)
-                        if (!cells[cell.x+1][cell.y+1].opened) {
-                            if (cells[cell.x+1][cell.y+1].probability == 0.000) {
-                                cells[cell.x+1][cell.y+1].probability = (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y);
-                                p.add(cells[cell.x+1][cell.y+1]);
-                            }
-                            else {
-                                cells[cell.x+1][cell.y+1].probability = 1 - (1 - cells[cell.x+1][cell.y+1].probability) * (1 - (double) freeMines(cells[cell.x][cell.y]) /
-                                        (double) notOpenedCellsNear(cell.x, cell.y));
-                                p.add(cells[cell.x+1][cell.y+1]);
-                            }
-                        }
                 }
             }
         }
@@ -327,52 +231,16 @@ class BotPlayer extends JPanel {
     }
 
     public void rightClicks(int x, int y) throws InterruptedException {
-        if (x > 0)
-            rightClick (cells [x-1] [y]);
-        if (x < sizeX - 1)
-            rightClick(cells [x+1] [y]);
-        if (y > 0) {
-            rightClick (cells [x] [y-1]);
-            if (x % 2 == 0) {
-                if (x > 0)
-                    rightClick(cells [x-1] [y-1]);
-                if (x < sizeX - 1)
-                    rightClick(cells [x+1] [y-1]);
-            }
-        }
-        if (y < sizeY - 1) {
-            rightClick(cells [x] [y+1]);
-            if (x % 2 == 1) {
-                if (x > 0)
-                    rightClick(cells [x-1] [y+1]);
-                if (x < sizeX - 1)
-                    rightClick(cells [x+1] [y+1]);
-            }
+        List<Cell> n = getNeighbours(x, y);
+        for (Cell cell: n) {
+            rightClick(cell);
         }
     }
 
     public void leftClicks(int x, int y) throws InterruptedException {
-        if (x > 0)
-            leftClick (cells [x-1] [y]);
-        if (x < sizeX - 1)
-            leftClick(cells [x+1] [y]);
-        if (y > 0) {
-            leftClick (cells [x] [y-1]);
-            if (x % 2 == 0) {
-                if (x > 0)
-                    leftClick(cells [x-1] [y-1]);
-                if (x < sizeX - 1)
-                    leftClick(cells [x+1] [y-1]);
-            }
-        }
-        if (y < sizeY - 1) {
-            leftClick(cells [x] [y+1]);
-            if (x % 2 == 1) {
-                if (x > 0)
-                   leftClick(cells [x-1] [y+1]);
-                if (x < sizeX - 1)
-                    leftClick(cells [x+1] [y+1]);
-            }
+        List<Cell> n = getNeighbours(x, y);
+        for (Cell cell: n) {
+            leftClick(cell);
         }
     }
 
@@ -463,71 +331,21 @@ class BotPlayer extends JPanel {
     }
 
     public int notOpenedCellsNear(int x, int y) {
+        List<Cell> n = getNeighbours(x, y);
         int ans = 0;
-        if (x > 0)
-            if (!cells[x-1][y].opened)
+        for (Cell cell: n) {
+            if (!cell.opened)
                 ans++;
-        if (x < sizeX - 1)
-            if (!cells[x+1][y].opened)
-                ans++;
-        if (y > 0) {
-            if (!cells[x][y-1].opened)
-                ans++;
-            if (x % 2 == 0) {
-                if (x > 0)
-                    if (!cells[x-1][y-1].opened)
-                        ans++;
-                if (x < sizeX - 1)
-                    if (!cells[x+1][y-1].opened)
-                        ans++;
-            }
-        }
-        if (y < sizeY - 1) {
-            if (!cells[x][y+1].opened)
-                ans++;
-            if (x % 2 == 1) {
-                if (x > 0)
-                    if (!cells [x-1][y+1].opened)
-                        ans++;
-                if (x < sizeX - 1)
-                    if (!cells[x+1][y+1].opened)
-                        ans++;
-            }
         }
         return ans;
     }
 
     public int openedMinesNear(int x, int y) {
+        List<Cell> n = getNeighbours(x, y);
         int ans = 0;
-        if (x > 0)
-            if (cells[x-1][y].opened && cells[x-1][y].hasMine)
+        for (Cell cell: n) {
+            if (cell.opened && cell.hasMine)
                 ans++;
-        if (x < sizeX - 1)
-            if (cells[x+1][y].opened && cells[x+1][y].hasMine)
-                ans++;
-        if (y > 0) {
-            if (cells[x][y-1].opened && cells[x][y-1].hasMine)
-                ans++;
-            if (x % 2 == 0) {
-                if (x > 0)
-                    if (cells[x-1][y-1].opened && cells[x-1][y-1].hasMine)
-                        ans++;
-                if (x < sizeX - 1)
-                    if (cells[x+1][y-1].opened && cells[x+1][y-1].hasMine)
-                        ans++;
-            }
-        }
-        if (y < sizeY - 1) {
-            if (cells[x][y+1].opened && cells[x][y+1].hasMine)
-                ans++;
-            if (x % 2 == 1) {
-                if (x > 0)
-                    if (cells [x-1][y+1].opened && cells[x-1][y+1].hasMine)
-                        ans++;
-                if (x < sizeX - 1)
-                   if (cells[x+1][y+1].opened && cells[x+1][y+1].hasMine)
-                       ans++;
-            }
         }
         return ans;
     }
@@ -537,28 +355,10 @@ class BotPlayer extends JPanel {
     }
 
     public boolean isClosed(int x, int y) {
-        ArrayList<Cell> s = new ArrayList<Cell> ();
-        if (x > 0)
-            s.add (cells [x-1][y]);
-        if (x < sizeX - 1)
-            s.add (cells [x+1][y]);
-        if (y > 0) {
-            s.add (cells [x][y-1]);
-            if (x % 2 == 0) {
-                if (x > 0)
-                    s.add (cells [x-1][y-1]);
-                if (x < sizeX - 1)
-                    s.add (cells [x+1] [y-1]);
-            }
-        }
-        if (y < sizeY - 1) {
-            s.add (cells [x][y+1]);
-            if (x % 2 == 1) {
-                if (x > 0)
-                    s.add (cells [x-1][y+1]);
-                if (x < sizeX - 1)
-                    s.add (cells [x+1][y+1]);
-            }
+        List<Cell> n = getNeighbours(x, y);
+        List<Cell> s = new ArrayList<Cell> ();
+        for (Cell cell: n) {
+            s.add(cell);
         }
         for (Cell ce: s) {
             if (!ce.opened)
