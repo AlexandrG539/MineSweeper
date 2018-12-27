@@ -4,13 +4,13 @@ class MineSweeperGameTest {
     @org.junit.jupiter.api.Test
     void getFieldWidth() {
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 0,
-                null, null);
+                null, null, false);
         assertEquals(gameTest.getFieldWidth(),950);
     }
     @org.junit.jupiter.api.Test
     void getFieldHeight() {
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 0,
-                null, null);
+                null, null, false);
         assertEquals(gameTest.getFieldHeight(),764);
     }
 
@@ -18,7 +18,7 @@ class MineSweeperGameTest {
     void fillWithMines() {
         int mines = 0;
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 30,
-                null, null);
+                null, null, false);
         gameTest.fillWithMines(0,0);
         for (int x = 0; x < 15; x++) {
             for (int y = 0; y < 10; y++) {
@@ -34,7 +34,7 @@ class MineSweeperGameTest {
     @org.junit.jupiter.api.Test
     void calculateNeighboursCount() {
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 0,
-                null, null);
+                null, null,false);
         gameTest.placeMine(0,1);
         gameTest.placeMine(0,2);
         gameTest.placeMine(1,0);
@@ -46,9 +46,9 @@ class MineSweeperGameTest {
     }
 
     @org.junit.jupiter.api.Test
-    void leftClick() {
+    void leftClick() throws InterruptedException {
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 0,
-                null, null);
+                null, null,false);
         gameTest.leftClick(gameTest.cells[0][0]);
         if (gameTest.cells[0][0].opened)
             assertEquals(true, true);
@@ -56,9 +56,9 @@ class MineSweeperGameTest {
     }
 
     @org.junit.jupiter.api.Test
-    void rightClick() {
+    void rightClick() throws InterruptedException {
         MineSweeperGame gameTest = new MineSweeperGame (15, 10, 40, 10, 0,
-                null, null);
+                null, null,false);
         gameTest.placeMine(1,1);
         gameTest.rightClick(gameTest.cells[1][1]);
         if (gameTest.cells[1][1].flagged)

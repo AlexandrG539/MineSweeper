@@ -36,7 +36,7 @@ public class MineSweeper {
                     new GameResultDialog(frame, "<html><h1><i>Вы выиграли!!!</h1></html>");
             MineSweeperGame game = new MineSweeperGame(w, h, 40, 10,
                     m,
-                    successDialog, failDialog);
+                    successDialog, failDialog, false);
             game.clear();
             frame.setSize(game.getFieldWidth(), game.getFieldHeight());
             frame.getContentPane().add(game);
@@ -51,9 +51,9 @@ public class MineSweeper {
                     new GameResultDialog(frame, "<html><h1><i>Вы проиграли!!!</h1></html>");
             GameResultDialog successDialog =
                     new GameResultDialog(frame, "<html><h1><i>Вы выиграли!!!</h1></html>");
-            BotPlayer game = new BotPlayer(w, h, 40, 10,
+            MineSweeperGame game = new MineSweeperGame(w, h, 40, 10,
                     m,
-                    successDialog, failDialog);
+                    successDialog, failDialog, true);
             game.clear();
             frame.setSize(game.getFieldWidth(), game.getFieldHeight());
             frame.getContentPane().add(game);
